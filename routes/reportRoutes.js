@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const reportController = require('../controllers/reportController');
+const reportController = require('../controllers/reportcontroller');
 require('../models/user'); // <-- Add this line to register the user schema
 // In routes/reportRoutes.js
 const { upload, uploadImageToGridFSForReport } = require('../middleware/uploadMiddleware');
