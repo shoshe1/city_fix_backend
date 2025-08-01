@@ -10,13 +10,13 @@ router.post('/register', upload.single('user_photo'), uploadImageToGridFS, userC
 router.post('/login', userController.authenticateUser);
 
 // User routes
-router.get('/profile/:user_id',upload.single('user_photo'), uploadImageToGridFS, userController.getUserProfile);
-router.put('/profile/:user_id', upload.single('user_photo'), uploadImageToGridFS, userController.updateUserProfile);
-router.delete('/:user_id', userController.deleteUser);
+router.get('/profile/:user_id', userController.getUserProfile);router.delete('/:user_id', userController.deleteUser);
+router.get('/:user_id/image', userController.getUserImage);
+router.get('/:user_id/reports', userController.getUserReports);
 // router.get('/reports/:user_id', userController.getuserreportshistory);
 
 // Admin routes
-// router.get('/', userController.getAllUsers);
+router.get('/', userController.getAllUsers);
 
 
 

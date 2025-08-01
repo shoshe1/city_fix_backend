@@ -1,6 +1,8 @@
 const user = require('../models/user');
+const Report = require('../models/report');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { getGridFSBucket } = require('../middleware/uploadMiddleware');
 
 // Create a new user
 exports.createUser = async (req, res) => {
@@ -79,21 +81,18 @@ exports.authenticateUser = async (req, res) => {
  
 // Get user profile
 exports.getUserProfile = async (req, res) => {
-    try {
-        const user_id = req.params.user_id;
-    
-        // Find user by user_id
-        const existingUser = await user.findOne({ user_id });
-        if (!existingUser) {
-        return res.status(404).json({ message: 'User not found' });
-        }
-    
-        res.status(200).json({ user: existingUser });
-    } catch (error) {
-        console.error('Error fetching user profile:', error);
-        res.status(500).json({ message: 'Internal server error' });
+  try {
+    const user_id = Number(req.params.user_id); // Ensure it's a number
+    const existingUser = await user.findOne({ user_id });
+    if (!existingUser) {
+      return res.status(404).json({ message: 'User not found' });
     }
-    }
+    res.status(200).json({ user: existingUser });
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
 // Update user profile
 exports.updateUserProfile = async (req, res) => {
     try {
@@ -143,3 +142,52 @@ exports.deleteUser = async (req, res) => {
     }
 }
 
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await user.find({}, '-password'); // Exclude password field from response
+    res.status(200).json(users);
+  } catch (error) {
+    console.error('Error fetching all users:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+} 
+
+exports.getUserImage = async (req, res) => {
+  try {
+    // Find user by user_id (not _id)
+    const existingUser = await user.findOne({ user_id: req.params.user_id });
+    if (!existingUser || !existingUser.user_photo) {
+      return res.status(404).json({ message: 'User or image not found' });
+    }
+    const bucket = getGridFSBucket('user_photos');
+    const fileId = typeof existingUser.user_photo === 'string'
+      ? new mongoose.Types.ObjectId(existingUser.user_photo)
+      : existingUser.user_photo;
+    const downloadStream = bucket.openDownloadStream(fileId);
+
+    downloadStream.on('error', () => res.status(404).json({ message: 'Image not found' }));
+    res.set('Content-Type', 'image/jpeg'); // or detect from metadata
+    downloadStream.pipe(res);
+  } catch (err) {
+    console.error('Error fetching user image:', err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+
+exports.getUserReports = async (req, res) => {
+  try {
+    const userId = req.params.user_id;
+    // Find the user by user_id
+    const existingUser = await user.findOne({ user_id: userId });
+    if (!existingUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    // Find all reports by this user's _id
+    const reports = await Report.find({ user: existingUser._id });
+    res.status(200).json(reports);
+  } catch (error) {
+    console.error('Error fetching user reports:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
