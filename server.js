@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const userRoutes = require('./routes/userroutes');
 const reportRoutes = require('./routes/reportRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
 const {GridFSBucket} = require('mongodb');
 const env = require('dotenv').config();
 
@@ -29,6 +30,7 @@ app.get('/api/images/:id', async (req, res) => {
 
 app.use('/api/users', userRoutes);
 app.use('/api/reports', reportRoutes);
+app.use('/api/notifications', require('./routes/notificationRoutes'));
 // MongoDB connection string
 
 // Connect to MongoDB
