@@ -8,7 +8,7 @@ const reportSchema = new mongoose.Schema({
     lng: Number,
     address: String
   },
-  status: { type: String, default: 'new' },
+  status: { type: String, default: 'pending' },
   images: { type: mongoose.Schema.Types.ObjectId, ref: 'uploads.files' },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
