@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const userRoutes = require('./routes/userroutes');
 const reportRoutes = require('./routes/reportRoutes');
-const notificationRoutes = require('./routes/notificationRoutes');
+const notificationRoutes = require('./routes/notificationroutes');
 const {GridFSBucket} = require('mongodb');
 const env = require('dotenv').config();
 
