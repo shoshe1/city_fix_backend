@@ -30,7 +30,7 @@ app.get('/api/images/:id', async (req, res) => {
 
 app.use('/api/users', userRoutes);
 app.use('/api/reports', reportRoutes);
-app.use('/api/notifications', require('./routes/notificationRoutes'));
+app.use('/api/notifications', require('./routes/notificationroutes'));
 // MongoDB connection string
 
 // Connect to MongoDB
