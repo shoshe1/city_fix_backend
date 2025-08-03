@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const notificationcontroller = require('../controllers/notificationController');
+const notificationcontroller = require('../controllers/notificationcontroller');
 require('../models/user');
 
 router.post('/create', notificationcontroller.createNotification);
